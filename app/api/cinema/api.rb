@@ -15,6 +15,11 @@ module Cinema
       def authenticate!
         error!('401 Unauthorized', 401) unless current_user
       end
+
+      def ensure_cinema_owner!
+        authenticate!
+        error!('403 Forbidden', 403) unless current_user.cinema_owner?
+      end
     end
 
     resources :films do
@@ -47,66 +52,67 @@ module Cinema
     end
 
     # An internal endpoint in which they (i.e. the cinema owners) can update show times and prices for their movie catalog
-  #   resource :show_times do
-  #     get do
-  #       # TODO index
-  #     end
-  #
-  #     # desc 'Return a status.'
-  #     # params do
-  #     #   requires :id, type: Integer, desc: 'Status ID.'
-  #     # end
-  #     # route_param :id do
-  #     #   get do
-  #     #     Status.find(params[:id])
-  #     #   end
-  #     # end
-  #
-  #     desc 'Return a public timeline.'
-  #     get :public_timeline do
-  #       Status.limit(20)
-  #     end
-  #
-  #     desc 'Return a personal timeline.'
-  #     get :home_timeline do
-  #       authenticate!
-  #       current_user.statuses.limit(20)
-  #     end
-  #
-  #
-  #     desc 'Create a status.'
-  #     params do
-  #       requires :status, type: String, desc: 'Your status.'
-  #     end
-  #     post do
-  #       authenticate!
-  #       Status.create!({
-  #                          user: current_user,
-  #                          text: params[:status]
-  #                      })
-  #     end
-  #
-  #     desc 'Update a status.'
-  #     params do
-  #       requires :id, type: String, desc: 'Status ID.'
-  #       requires :status, type: String, desc: 'Your status.'
-  #     end
-  #     put ':id' do
-  #       authenticate!
-  #       current_user.statuses.find(params[:id]).update({
-  #                                                          user: current_user,
-  #                                                          text: params[:status]
-  #                                                      })
-  #     end
-  #
-  #     desc 'Delete a status.'
-  #     params do
-  #       requires :id, type: String, desc: 'Status ID.'
-  #     end
-  #     delete ':id' do
-  #       authenticate!
-  #       current_user.statuses.find(params[:id]).destroy
-  #     end
-  #   end
+    resource :show_times do
+      # get do
+      #   # TODO index
+      # end
+
+      desc 'Create a show time.'
+      params do
+        requires :price, type: Integer, desc: 'Price for the ticket.'
+        requires :start_time, type: String, desc: 'Date and time for start.'
+        requires :film_imdb_id, type: String, desc: 'IMDB ID of the film'
+      end
+
+      post do
+        ensure_cinema_owner!
+
+        film = Film.find_by_imdb_id(params[:film_imdb_id])
+        error!('404 Film Not Found', 404) unless film
+
+        price = params[:price]
+        error!('400 Price should be greater then 0', 400) unless price > 0
+
+        start_time = DateTime.parse(params[:start_time])
+        error!('400 Start time should be in the future', 400) unless start_time > DateTime.now
+
+        ShowTime.build(start_time: start_time, film: film, price: price).save!
+      end
+
+      params do
+        requires :id, type: Integer, desc: 'Show Time ID'
+      end
+      route_param :id do
+        before do
+          @show_time = ShowTime.find(params[:id])
+        end
+
+        desc 'Update a show time.'
+        params do
+          optional :price, type: Integer, desc: 'Price for the ticket.'
+          optional :start_time, type: String, desc: 'Date and time for start.'
+        end
+
+        put do
+          ensure_cinema_owner!
+
+          if params[:price]
+            price = params[:price]
+            error!('400 Price should be greater then 0', 400) unless price > 0
+            @show_time.price = price
+          end
+
+          if params[:start_time]
+            start_time = DateTime.parse(params[:start_time])
+            error!('400 Start time should be in the future', 400) unless start_time > DateTime.now
+            end_time = start_time + @show_time.film.show_time_duration
+            @show_time.start_time = start_time
+            @show_time.end_time = end_time
+          end
+
+          @show_time.save!
+        end
+      end
+    end
   end
 end

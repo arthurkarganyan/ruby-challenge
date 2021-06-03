@@ -24,4 +24,4 @@ For API gem `grape` was chosen, thought I was possible to use standard rails con
 * Cinema timeslots are discrete by 15 minutes. E.g. film can start 16:30 and end 18:00, but not 16:32 -> 17:56.
 * Ads time before the film = 15 minutes.
 * Required time for cinema = film duration + 15 minutes rounded up to 15 minutes. E.g. if film is 97 minutes, then
-`timeslot duration = 120 min` (implemented in `cinema_timeslot_duration`)
+`timeslot duration = 120 min` (implemented in `show_time_duration`)

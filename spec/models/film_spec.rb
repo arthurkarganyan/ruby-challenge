@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Film, type: :model do
-  describe "#cinema_timeslot_duration" do
+  describe "#show_time_duration" do
     subject do
       Film.new(title: FFaker::Movie.title, runtime_min: runtime_min)
     end
@@ -10,7 +10,7 @@ RSpec.describe Film, type: :model do
       let(:runtime_min) {3}
 
       it do
-        expect(subject.cinema_timeslot_duration).to eq(30.minutes)
+        expect(subject.show_time_duration).to eq(30.minutes)
       end
     end
 
@@ -18,7 +18,7 @@ RSpec.describe Film, type: :model do
       let(:runtime_min) {30}
 
       it do
-        expect(subject.cinema_timeslot_duration).to eq(45.minutes)
+        expect(subject.show_time_duration).to eq(45.minutes)
       end
     end
 
@@ -26,7 +26,7 @@ RSpec.describe Film, type: :model do
       let(:runtime_min) {97}
 
       it do
-        expect(subject.cinema_timeslot_duration).to eq(120.minutes)
+        expect(subject.show_time_duration).to eq(120.minutes)
       end
     end
   end

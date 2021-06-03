@@ -3,6 +3,7 @@ class Film < ApplicationRecord
   validates :released, presence: true
   validates :runtime_min, presence: true, numericality: {greater_than: 0}
 
+  has_many :show_times
   has_many :film_reviews
 
   def self.new_from_omdb_api(ombd_api_json)
@@ -29,7 +30,7 @@ class Film < ApplicationRecord
   TIMESLOTS_TIME = 15.minutes
   ADS_TIME = 15.minutes
 
-  def cinema_timeslot_duration
+  def show_time_duration
     overall_time = (runtime_min.minutes + ADS_TIME)
 
     x = (overall_time % TIMESLOTS_TIME > 0) ? 1 : 0
