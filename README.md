@@ -22,3 +22,10 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+# Comments
+
+For interaction with OMDb API `httparty` gem is used (file `lib/obdb_api.rb`).
+
+For storing OMDB API key gem `dotenv` is used, which loads `.env` file from the root of the application. 
+That makes accessible `ENV['OMDB_API_KEY']`. Also `.env` file should be gitignored.
