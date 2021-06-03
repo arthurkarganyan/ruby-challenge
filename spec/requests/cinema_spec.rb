@@ -95,6 +95,29 @@ describe Cinema::Api do
       expect(response.status).to eq(403)
     end
 
+    describe "get /api/show_times" do
+      it "before 2 films" do
+        s1 = ShowTime.build_and_save!(film: film, price: 10, start_time: '10 Dec 2021 18:00')
+        s2 = ShowTime.build_and_save!(film: film, price: 10, start_time: '10 Dec 2021 21:00')
+
+        allow(DateTime).to receive(:now).and_return(DateTime.parse('9 Dec 2021'))
+        get "/api/show_times"
+        expect(response.status).to eq(200)
+        expect(parsed_body.size).to eq(2)
+      end
+
+      it "after start of first film" do
+        s1 = ShowTime.build_and_save!(film: film, price: 10, start_time: '10 Dec 2021 18:00')
+        s2 = ShowTime.build_and_save!(film: film, price: 10, start_time: '10 Dec 2021 21:00')
+
+        allow(DateTime).to receive(:now).and_return(DateTime.parse('10 Dec 2021 19:00'))
+        get "/api/show_times"
+        expect(response.status).to eq(200)
+        expect(parsed_body.size).to eq(1)
+        expect(parsed_body[0]["id"]).to eq(s2.id)
+      end
+    end
+
     context "cinema owner" do
       let(:headers) do
         {"HTTP_AUTHORIZATION" => ("Basic " + Base64::encode64("#{cinema_owner1.email}:#{cinema_owner1_password}"))}

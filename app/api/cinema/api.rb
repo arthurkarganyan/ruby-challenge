@@ -53,9 +53,9 @@ module Cinema
 
     # An internal endpoint in which they (i.e. the cinema owners) can update show times and prices for their movie catalog
     resource :show_times do
-      # get do
-      #   # TODO index
-      # end
+      get do
+        ShowTime.future.all
+      end
 
       desc 'Create a show time.'
       params do

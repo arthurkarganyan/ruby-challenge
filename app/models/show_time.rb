@@ -1,6 +1,10 @@
 class ShowTime < ApplicationRecord
   belongs_to :film
 
+  scope :future, -> {
+    where('start_time > ?', DateTime.now)
+  }
+
   def self.build(film:, price:, start_time:)
     if start_time.class == String
       start_time = DateTime.parse start_time
