@@ -14,3 +14,10 @@ I took the conservative approach and used SQL database (SQLite, but Postgres for
 For converting data from OMDB Api format to database format I use `Film#new_from_omdb_api` method (with test coverage in `spec/models/film_spec.rb`). Some devs would argue, that it would be better to move it to service object and I agree, but I don't want to introduce complexity too early.
 
 The data types and fields names I've chosen are more based on my intuition rather then real cases, because I don't have the full picture yet. And I foresee possible migrations from one data type to another (e.g. make `box_office` integer and store currency - but only if this will be needed). For me, the important part is consistency, e.g. `imdbRating` is camelcase, but in Ruby snake case `imdb_rating` is the convention.
+
+# Assumptions
+
+* Cinema timeslots are discrete by 15 minutes. E.g. film can start 16:30 and end 18:00, but not 16:32 -> 17:56.
+* Ads time before the film = 15 minutes.
+* Required time for cinema = film duration + 15 minutes rounded up to 15 minutes. E.g. if film is 97 minutes, then
+`timeslot duration = 120 min` (implemented in `cinema_timeslot_duration`)

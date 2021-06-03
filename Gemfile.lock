@@ -73,6 +73,7 @@ GEM
       dotenv (= 2.7.6)
       railties (>= 3.2)
     erubi (1.10.0)
+    ffaker (2.18.0)
     ffi (1.15.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -183,6 +184,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.4)
   byebug
   dotenv-rails
+  ffaker (~> 2.18)
   httparty (~> 0.18.1)
   listen (~> 3.3)
   pry-rails (~> 0.3.9)

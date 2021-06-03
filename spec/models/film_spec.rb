@@ -1,6 +1,36 @@
 require 'rails_helper'
 
 RSpec.describe Film, type: :model do
+  describe "#cinema_timeslot_duration" do
+    subject do
+      Film.new(title: FFaker::Movie.title, runtime_min: runtime_min)
+    end
+
+    describe "duration_min=3" do
+      let(:runtime_min) {3}
+
+      it do
+        expect(subject.cinema_timeslot_duration).to eq(30.minutes)
+      end
+    end
+
+    describe "duration_min=30" do
+      let(:runtime_min) {30}
+
+      it do
+        expect(subject.cinema_timeslot_duration).to eq(45.minutes)
+      end
+    end
+
+    describe "duration_min=97" do
+      let(:runtime_min) {97}
+
+      it do
+        expect(subject.cinema_timeslot_duration).to eq(120.minutes)
+      end
+    end
+  end
+
   describe "#new_from_omdb_api" do
     let(:omdb_api_response) do
       {"Title" => "The Fast and the Furious",
