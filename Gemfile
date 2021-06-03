@@ -43,3 +43,4 @@ gem "rspec-rails", "~> 5.0"
 
 gem "httparty", "~> 0.18.1"
 gem 'dotenv-rails', groups: [:development, :test]
+gem "pry-rails", "~> 0.3.9"
