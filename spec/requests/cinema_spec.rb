@@ -3,9 +3,9 @@ describe Cinema::Api do
     JSON.parse(response.body)
   end
 
-  let(:user1) do
-    User.create(email: FFaker::Internet.email, password: FFaker::Internet.password, role: :moviegoer)
-  end
+  let(:user1) {User.create(email: user1_email, password: user1_password, role: :moviegoer)}
+  let(:user1_email) {FFaker::Internet.email}
+  let(:user1_password) {FFaker::Internet.password}
 
   let(:user2) do
     User.create(email: FFaker::Internet.email, password: FFaker::Internet.password, role: :moviegoer)
@@ -60,6 +60,17 @@ describe Cinema::Api do
       get "/api/films/#{film.imdb_id}"
       expect(response.status).to eq(200)
       expect(parsed_body["title"]).to eq(title)
+    end
+
+    describe "film review" do
+      it do
+        expect(film.avg_rating).to eq(nil)
+        user1
+        headers = {"HTTP_AUTHORIZATION" => ("Basic " + Base64::encode64("#{user1_email}:#{user1_password}"))}
+        post "/api/films/#{film.imdb_id}/rate", params: {stars: 5}, headers: headers
+        expect(response.status).to eq(201)
+        expect(film.avg_rating).to eq(5)
+      end
     end
   end
 end

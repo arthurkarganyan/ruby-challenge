@@ -4,18 +4,18 @@ module Cinema
     format :json
     prefix :api
 
-    # TODO should I add users?
-    # helpers do
-    #   def current_user
-    #     @current_user ||= User.authorize!(env)
-    #   end
-    #
-    #   def authenticate!
-    #     error!('401 Unauthorized', 401) unless current_user
-    #   end
-    # end
-    #
-    #
+    helpers do
+      def current_user
+        email, password = Base64::decode64(headers["Authorization"].gsub("Basic ", '')).split(':')
+        user = User.find_by_email(email)
+        return nil unless user
+        @current_user ||= user.authenticate password
+      end
+
+      def authenticate!
+        error!('401 Unauthorized', 401) unless current_user
+      end
+    end
 
     resources :films do
       get do
@@ -37,8 +37,11 @@ module Cinema
         end
 
         desc "An endpoint in which their customers (i.e. moviegoers) can leave a review rating (from 1-5 stars) about a particular movie"
+        params do
+          requires :stars, type: Integer, desc: 'rating for the film: 1, 2, 3, 4 or 5', values: [1, 2, 3, 4, 5]
+        end
         post :rate do
-          # TODO
+          FilmReview.create!(stars: params[:stars], film: @film, user: current_user)
         end
       end
     end
