@@ -22,26 +22,25 @@ module Cinema
         Film.all
       end
 
-      # params do
-      #   requires :imdb_id, type: Integer, desc: 'Film IMDB ID.'
-      # end
-      # route_param :imdb_id do
-      #   before do
-      #     @film = Film.find_by_imdb_id(params[:imdb_id])
-      #     # TODO handle not found
-      #     # error!('404 Not Found', 404) unless @film
-      #   end
-      #
-      #   desc "An endpoint in which their customers (i.e. moviegoers) can fetch details about one of their movies (e.g. name, description, release date, rating, IMDb rating, and runtime). Even though there's a limited offering, please use the OMDb APIs (detailed below) to demonstrate how to communicate across APIs."
-      #   get do
-      #     @film
-      #   end
-      #
-      #   desc "An endpoint in which their customers (i.e. moviegoers) can leave a review rating (from 1-5 stars) about a particular movie"
-      #   post :rate do
-      #     # TODO
-      #   end
-      # end
+      params do
+        requires :imdb_id, type: String, desc: 'Film IMDB ID.'
+      end
+      route_param :imdb_id do
+        before do
+          @film = Film.find_by_imdb_id(params[:imdb_id])
+          error!('404 Not Found', 404) unless @film
+        end
+
+        desc "An endpoint in which their customers (i.e. moviegoers) can fetch details about one of their movies (e.g. name, description, release date, rating, IMDb rating, and runtime). Even though there's a limited offering, please use the OMDb APIs (detailed below) to demonstrate how to communicate across APIs."
+        get do
+          @film
+        end
+
+        desc "An endpoint in which their customers (i.e. moviegoers) can leave a review rating (from 1-5 stars) about a particular movie"
+        post :rate do
+          # TODO
+        end
+      end
     end
 
     # An internal endpoint in which they (i.e. the cinema owners) can update show times and prices for their movie catalog

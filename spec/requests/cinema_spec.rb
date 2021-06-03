@@ -38,11 +38,28 @@ describe Cinema::Api do
     end
   end
 
-  # context 'GET /api/statuses/:id' do
-  #   it 'returns a status by id' do
-  #     status = Status.create!
-  #     get "/api/statuses/#{status.id}"
-  #     expect(response.body).to eq status.to_json
-  #   end
-  # end
+  context 'GET /api/films/:imdb_id' do
+    let(:title) do
+      "Terminator"
+    end
+
+    let(:film) do
+      Film.create!(title: title,
+                   runtime_min: rand(30..120),
+                   released: rand(2000..2020),
+                   imdb_id: "tt" + Array.new(7) {rand(9)}.join)
+    end
+
+
+    it "404" do
+      get "/api/films/404"
+      expect(response.status).to eq(404)
+    end
+
+    it "correct info is loaded" do
+      get "/api/films/#{film.imdb_id}"
+      expect(response.status).to eq(200)
+      expect(parsed_body["title"]).to eq(title)
+    end
+  end
 end
