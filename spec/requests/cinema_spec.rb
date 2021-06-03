@@ -1,4 +1,4 @@
-describe Cinema::Api do
+describe Cinema::Root do
   let(:parsed_body) do
     JSON.parse(response.body)
   end
