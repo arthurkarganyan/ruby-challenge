@@ -37,6 +37,11 @@ class Film < ApplicationRecord
   end
 
   def avg_rating
-    film_reviews.average(:stars).round(1)
+    res = film_reviews.average(:stars)
+    res ? res.round(1) : nil
+  end
+
+  def as_json(opts)
+    super.merge(avg_rating: avg_rating)
   end
 end

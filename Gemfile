@@ -46,3 +46,5 @@ gem 'dotenv-rails', groups: [:development, :test]
 gem "pry-rails", "~> 0.3.9"
 
 gem "ffaker", "~> 2.18", groups: [:test]
+
+gem "grape", "~> 1.5"

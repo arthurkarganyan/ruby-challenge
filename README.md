@@ -17,6 +17,8 @@ The data types and fields names I've chosen are more based on my intuition rathe
 
 Films have `avg_rating` field calculated based on user reviews.
 
+For API gem `grape` was chosen, thought I was possible to use standard rails controllers. Why Grape? Well, it uses ruby syntax in elegant way: combining routing, params validation, controller layer in one place. Also, it supports swagger docs generation.
+
 # Assumptions
 
 * Cinema timeslots are discrete by 15 minutes. E.g. film can start 16:30 and end 18:00, but not 16:32 -> 17:56.
