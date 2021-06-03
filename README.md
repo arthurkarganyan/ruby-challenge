@@ -15,6 +15,8 @@ For converting data from OMDB Api format to database format I use `Film#new_from
 
 The data types and fields names I've chosen are more based on my intuition rather then real cases, because I don't have the full picture yet. And I foresee possible migrations from one data type to another (e.g. make `box_office` integer and store currency - but only if this will be needed). For me, the important part is consistency, e.g. `imdbRating` is camelcase, but in Ruby snake case `imdb_rating` is the convention.
 
+Films have `avg_rating` field calculated based on user reviews.
+
 # Assumptions
 
 * Cinema timeslots are discrete by 15 minutes. E.g. film can start 16:30 and end 18:00, but not 16:32 -> 17:56.

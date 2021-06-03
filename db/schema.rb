@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_03_120022) do
+ActiveRecord::Schema.define(version: 2021_06_03_151428) do
+
+  create_table "film_reviews", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "film_id", null: false
+    t.integer "stars"
+    t.text "comment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["film_id"], name: "index_film_reviews_on_film_id"
+    t.index ["user_id"], name: "index_film_reviews_on_user_id"
+  end
 
   create_table "films", force: :cascade do |t|
     t.string "title"
@@ -41,4 +52,16 @@ ActiveRecord::Schema.define(version: 2021_06_03_120022) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "role", null: false
+    t.string "password_digest", default: "", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["role"], name: "index_users_on_role"
+  end
+
+  add_foreign_key "film_reviews", "films"
+  add_foreign_key "film_reviews", "users"
 end

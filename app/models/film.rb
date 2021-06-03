@@ -3,6 +3,8 @@ class Film < ApplicationRecord
   validates :released, presence: true
   validates :runtime_min, presence: true, numericality: {greater_than: 0}
 
+  has_many :film_reviews
+
   def self.new_from_omdb_api(ombd_api_json)
     res = Film.new
     res.released = Date.parse(ombd_api_json["Released"])
@@ -32,5 +34,9 @@ class Film < ApplicationRecord
 
     x = (overall_time % TIMESLOTS_TIME > 0) ? 1 : 0
     (overall_time / TIMESLOTS_TIME + x) * TIMESLOTS_TIME
+  end
+
+  def avg_rating
+    film_reviews.average(:stars).round(1)
   end
 end

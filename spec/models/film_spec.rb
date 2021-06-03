@@ -195,4 +195,30 @@ RSpec.describe Film, type: :model do
       expect(record.errors[:runtime_min]).to include("must be greater than 0")
     end
   end
+
+  describe "#avg_rating" do
+    let(:film) do
+      Film.create!(title: FFaker::Movie.title, runtime_min: rand(30..120), released: rand(2000..2020))
+    end
+
+    let(:user1) do
+      User.create(email: FFaker::Internet.email, password: FFaker::Internet.password, role: :moviegoer)
+    end
+
+    let(:user2) do
+      User.create(email: FFaker::Internet.email, password: FFaker::Internet.password, role: :moviegoer)
+    end
+
+    let(:user3) do
+      User.create(email: FFaker::Internet.email, password: FFaker::Internet.password, role: :moviegoer)
+    end
+
+    it do
+      FilmReview.create!(film: film, user: user1, stars: 5)
+      FilmReview.create!(film: film, user: user2, stars: 5)
+      FilmReview.create!(film: film, user: user2, stars: 4)
+
+      expect(film.avg_rating.round(1)).to eq(4.7)
+    end
+  end
 end
